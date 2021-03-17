@@ -26,23 +26,25 @@ def PUNET(input, instance_norm=False, instance_norm_level_1=False, num_maps_base
         conv_l5_d3 = _conv_multi_block(conv_l5_d2, 3, num_maps=num_maps_base*16, instance_norm=instance_norm) + conv_l5_d2
         conv_l5_d4 = _conv_multi_block(conv_l5_d3, 3, num_maps=num_maps_base*16, instance_norm=instance_norm)
 
-        conv_t4b = _conv_tranpose_layer(conv_l5_d4, num_maps_base*8, 3, 2)      # 8 -> 16
+        conv_t4b = _conv_tranpose_layer(conv_l5_d4, num_maps_base*8, 3, 4)      # 8 -> 16
 
         # -----------------------------------------
         # Processing: Level 4,  Input size: 16 x 16
-        conv_l4_d6 = conv_l4_d1
-        conv_l4_d7 = stack(conv_l4_d6, conv_t4b)
-        conv_l4_d8 = _conv_multi_block(conv_l4_d7, 3, num_maps=num_maps_base*8, instance_norm=instance_norm)
+        # conv_l4_d6 = conv_l4_d1
+        # conv_l4_d7 = stack(conv_l4_d6, conv_t4b)
+        # conv_l4_d8 = _conv_multi_block(conv_l4_d7, 3, num_maps=num_maps_base*8, instance_norm=instance_norm)
 
-        conv_t3b = _conv_tranpose_layer(conv_l4_d8, num_maps_base*4, 3, 2)      # 16 -> 32
+        # conv_t3b = _conv_tranpose_layer(conv_l4_d8, num_maps_base*4, 3, 2)      # 16 -> 32
 
         # -----------------------------------------
         # Processing: Level 3,  Input size: 32 x 32
-        conv_l3_d6 = conv_l3_d1
-        conv_l3_d7 = stack(conv_l3_d6, conv_t3b)
+        conv_l3_d6 = conv_l4_d1
+        conv_l3_d7 = stack(conv_l3_d6, conv_t4b)
         conv_l3_d8 = _conv_multi_block(conv_l3_d7, 3, num_maps=num_maps_base*4, instance_norm=instance_norm)
 
         conv_t2b = _conv_tranpose_layer(conv_l3_d8, num_maps_base*2, 3, 2)       # 32 -> 64
+
+        # updated until line 45
 
         # -------------------------------------------
         # Processing: Level 2,  Input size: 64 x 64
