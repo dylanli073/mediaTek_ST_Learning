@@ -2,7 +2,10 @@
 # Dataloader for training/validation data #
 ###########################################
 
+# Sourced from https://github.com/MediaTek-NeuroPilot/mai21-learned-smartphone-isp
+
 from __future__ import print_function
+from imutils import paths
 from PIL import Image
 import imageio
 import os
@@ -35,16 +38,20 @@ def load_val_data(dataset_dir, dslr_dir, phone_dir, PATCH_WIDTH, PATCH_HEIGHT, D
     NUM_VAL_IMAGES = len([name for name in os.listdir(val_directory_phone)
                            if os.path.isfile(os.path.join(val_directory_phone, name))])
 
+    # list out the images which we will iterate over
+    VAL_RAW_IMAGES = sorted(list(paths.list_images(os.path.join(dataset_dir, phone_dir))))
+    VAL_RGB_IMAGES = sorted(list(paths.list_images(os.path.join(dataset_dir, dslr_dir))))
+
     val_data = np.zeros((NUM_VAL_IMAGES, PATCH_WIDTH, PATCH_HEIGHT, 4))
     val_answ = np.zeros((NUM_VAL_IMAGES, int(PATCH_WIDTH * DSLR_SCALE), int(PATCH_HEIGHT * DSLR_SCALE), 3))
 
-    for i in range(0, NUM_VAL_IMAGES):
+    for raw_image, rgb_image in zip(VAL_RAW_IMAGES, VAL_RGB_IMAGES):
 
-        I = np.asarray(imageio.imread((val_directory_phone + str(i) + '.png')))
+        I = np.asarray(imageio.imread(raw_image))
         I = extract_bayer_channels(I)
         val_data[i, :] = I
 
-        I = Image.open(val_directory_dslr + str(i) + '.' + format_dslr)
+        I = Image.open(rgb_image)
         I = np.array(I.resize((int(I.size[0] * DSLR_SCALE / 2), int(I.size[1] * DSLR_SCALE / 2)), resample=Image.BICUBIC))
         I = np.float16(np.reshape(I, [1, int(PATCH_WIDTH * DSLR_SCALE), int(PATCH_HEIGHT * DSLR_SCALE), 3])) / 255
         val_answ[i, :] = I
@@ -61,10 +68,12 @@ def load_train_patch(dataset_dir, dslr_dir, phone_dir, TRAIN_SIZE, PATCH_WIDTH, 
     format_dslr = str.split(os.listdir(train_directory_dslr)[0],'.')[-1]
 
     # determine training image numbers by listing all files in the folder
-    NUM_TRAINING_IMAGES = len([name for name in os.listdir(train_directory_phone)
-                               if os.path.isfile(os.path.join(train_directory_phone, name))])
+    # NUM_TRAINING_IMAGES = len([name for name in os.listdir(train_directory_phone)
+    #                            if os.path.isfile(os.path.join(train_directory_phone, name))])
 
-    TRAIN_IMAGES = np.random.choice(np.arange(0, NUM_TRAINING_IMAGES), TRAIN_SIZE, replace=False)
+    filenames = [name.split("/")[-1].split(".")[0] 
+        for name in list(paths.list_images(train_directory_dslr))]
+    TRAIN_IMAGES = np.random.choice(filenames, TRAIN_SIZE, replace=False)
 
     train_data = np.zeros((TRAIN_SIZE, PATCH_WIDTH, PATCH_HEIGHT, 4))
     train_answ = np.zeros((TRAIN_SIZE, int(PATCH_WIDTH * DSLR_SCALE), int(PATCH_HEIGHT * DSLR_SCALE), 3))
@@ -84,4 +93,3 @@ def load_train_patch(dataset_dir, dslr_dir, phone_dir, TRAIN_SIZE, PATCH_WIDTH, 
         i += 1
 
     return train_data, train_answ
-
