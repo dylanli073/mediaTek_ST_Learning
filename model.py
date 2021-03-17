@@ -13,16 +13,11 @@ def PUNET(input, instance_norm=False, instance_norm_level_1=False, num_maps_base
         # -----------------------------------------
         # Downsampling layers
         conv_l1_d1 = _conv_multi_block(input, 3, num_maps=num_maps_base, instance_norm=False)              # 128 -> 128
-        pool1 = max_pool(conv_l1_d1, 2)                                                         # 128 -> 64
+        pool1 = max_pool(conv_l1_d1, 4)                                                         # 128 -> 32
 
-        conv_l2_d1 = _conv_multi_block(pool1, 3, num_maps=num_maps_base*2, instance_norm=instance_norm)      # 64 -> 64
-        pool2 = max_pool(conv_l2_d1, 2)                                                         # 64 -> 32
+        conv_l4_d1 = _conv_multi_block(pool1, 3, num_maps=num_maps_base*4, instance_norm=instance_norm)     # 32 -> 32
+        pool4 = max_pool(conv_l4_d1, 4)                                                      # 32 -> 8
 
-        conv_l3_d1 = _conv_multi_block(pool2, 3, num_maps=num_maps_base*4, instance_norm=instance_norm)     # 32 -> 32
-        pool3 = max_pool(conv_l3_d1, 2)                                                         # 32 -> 16
-
-        conv_l4_d1 = _conv_multi_block(pool3, 3, num_maps=num_maps_base*8, instance_norm=instance_norm)     # 16 -> 16
-        pool4 = max_pool(conv_l4_d1, 2)                                                         # 16 -> 8
 
         # -----------------------------------------
         # Processing: Level 5,  Input size: 8 x 8
