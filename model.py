@@ -115,11 +115,10 @@ def conv2d(x, W):
 
 
 def _conv_layer(net, num_filters, filter_size, strides, relu=True, instance_norm=False, padding='SAME'):
-
     weights_init = _conv_init_vars(net, num_filters, filter_size)
     strides_shape = [1, strides, strides, 1]
     bias = tf.Variable(tf.constant(0.01, shape=[num_filters]))
-
+    global layer_name
     layer_name += 1
     net = tf.nn.conv2d(net, weights_init, strides_shape, padding=padding, name=str(layer_name)) + bias
 
