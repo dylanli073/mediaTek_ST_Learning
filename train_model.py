@@ -201,7 +201,7 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
 
     # printing out psnr
     plt.plot(val_losses[0][4])
-    for i in range(num_train_iters)
+    for i in range(num_train_iters):
         print(i, val_losses[0][4][i])
     
 
