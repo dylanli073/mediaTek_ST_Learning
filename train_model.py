@@ -145,7 +145,7 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
         [loss_temp, temp] = sess.run([loss_generator, train_step_gen], feed_dict={phone_: phone_images, dslr_: dslr_images})
         training_loss += loss_temp / eval_step
 
-        if i % 5 == 0:
+        if i % 200 == 0:
 
             # Evaluate model
             val_losses = np.zeros((1, 5))
