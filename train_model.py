@@ -200,6 +200,5 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
             train_data, train_answ = load_train_patch(dataset_dir, dslr_dir, phone_dir, train_size, PATCH_WIDTH, PATCH_HEIGHT, DSLR_SCALE)
 
     # printing out psnr
-    plt.plot(val_losses[0][4])
-
+    print(val_losses[0][4])
     print('total train/eval time:', datetime.now() - time_start)
