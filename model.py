@@ -5,6 +5,8 @@
 import tensorflow as tf
 import numpy as np
 
+#Increment this to make every layer have a different name
+layer_name = 0
 
 def PUNET(input, instance_norm=False, instance_norm_level_1=False, num_maps_base=16):
 
@@ -68,7 +70,7 @@ def PUNET(input, instance_norm=False, instance_norm_level_1=False, num_maps_base
 
         output_l0 = tf.nn.tanh(conv_l0_out) * 0.58 + 0.5
         
-    output_l0 = tf.identity(output_l0, name='output_l0') 
+    output_l0 = tf.identity(output_l0, name='output_l0')
 
     return output_l0
 
@@ -118,7 +120,8 @@ def _conv_layer(net, num_filters, filter_size, strides, relu=True, instance_norm
     strides_shape = [1, strides, strides, 1]
     bias = tf.Variable(tf.constant(0.01, shape=[num_filters]))
 
-    net = tf.nn.conv2d(net, weights_init, strides_shape, padding=padding) + bias
+    layer_name += 1
+    net = tf.nn.conv2d(net, weights_init, strides_shape, padding=padding, name=str(layer_name)) + bias
 
     if instance_norm:
         net = _instance_norm(net)
