@@ -6,6 +6,7 @@ import tensorflow as tf
 import imageio
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
 from datetime import datetime
 
 from load_dataset import load_train_patch, load_val_data
@@ -34,6 +35,7 @@ np.random.seed(0)
 with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
     time_start = datetime.now()
 
+    # mirrored_strategy = tf.distribute.MirroredStrategy()
     # determine model name
     if arch == "punet":
         name_model = "punet"
@@ -107,7 +109,6 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
         visual_crops_ids = np.random.randint(0, VAL_SIZE, batch_size)
         visual_val_crops = val_data[visual_crops_ids, :]
         visual_target_crops = val_answ[visual_crops_ids, :]
-
 
     print("Training network...")
 
@@ -192,11 +193,17 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
             training_loss = 0.0
 
         # Loading new training data
-        if i % 1000 == 0:
+        if i % 500 == 0:
 
             del train_data
             del train_answ
             train_data, train_answ = load_train_patch(dataset_dir, dslr_dir, phone_dir, train_size, PATCH_WIDTH, PATCH_HEIGHT, DSLR_SCALE)
+
+    # printing out psnr
+    plt.plot(val_losses[0][4])
+    for i in range(num_train_iters)
+        print(i, val_losses[0][4][i])
+    
 
     print('total train/eval time:', datetime.now() - time_start)
 
