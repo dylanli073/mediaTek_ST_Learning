@@ -36,7 +36,7 @@ def process_command_args(arguments):
     batch_size = 32
     train_size = 5000
     learning_rate = 5e-5
-    eval_step = 1000
+    eval_step = 500
     num_train_iters = None
     # --- more options ---
     save_mid_imgs = False

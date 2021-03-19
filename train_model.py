@@ -145,7 +145,7 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
         [loss_temp, temp] = sess.run([loss_generator, train_step_gen], feed_dict={phone_: phone_images, dslr_: dslr_images})
         training_loss += loss_temp / eval_step
 
-        if i % eval_step == 0:
+        if i % 5 == 0:
 
             # Evaluate model
             val_losses = np.zeros((1, 5))
@@ -193,7 +193,7 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
             training_loss = 0.0
 
         # Loading new training data
-        if i % 500 == 0:
+        if i % 1000 == 0:
 
             del train_data
             del train_answ
@@ -201,9 +201,5 @@ with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
 
     # printing out psnr
     plt.plot(val_losses[0][4])
-    for i in range(num_train_iters):
-        print(i, val_losses[0][4][i])
-    
 
     print('total train/eval time:', datetime.now() - time_start)
-
