@@ -68,7 +68,7 @@ def PUNET(input, instance_norm=False, instance_norm_level_1=False, num_maps_base
 
         output_l0 = tf.nn.tanh(conv_l0_out) * 0.58 + 0.5
         
-    output_l0 = tf.identity(output_l0, name='output_l0')
+    output_l0 = tf.identity(output_l0, name='output_l0') 
 
     return output_l0
 
